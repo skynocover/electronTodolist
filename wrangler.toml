@@ -1,0 +1,16 @@
+name = "todolist"
+type = "webpack"
+account_id = "c7f34060fc7e1530d72fcdafe6995359"
+workers_dev = true
+route = ""
+zone_id = ""
+
+kv_namespaces = [
+  { binding = "TODOS", id = "788c2302f9994770a637a252b099beef", preview_id = "788c2302f9994770a637a252b099beef" }
+]
+
+[dev]
+ip = "127.0.0.1"
+port = 9000
+local_protocol="http"
+upstream_protocol="https"
