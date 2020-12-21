@@ -12,9 +12,11 @@ async function handleRequest(request) {
     case 'GET':
       return getTodos(request);
     case 'POST':
-      return putTodos(request);
+      return postTodos(request);
     case 'DELETE':
       return delTodos(request);
+    case 'PUT':
+      return putTodos(request);
     default:
       break;
   }
@@ -55,6 +57,34 @@ const delTodos = async (request) => {
 };
 
 const putTodos = async (request) => {
+  const body = await request.text();
+  try {
+    const cache = await getCache();
+    let cachejson = [];
+    if (cache) {
+      cachejson = JSON.parse(cache);
+    }
+
+    let bodyjson = JSON.parse(body);
+    if (bodyjson.key && bodyjson.completed != undefined) {
+      let newlist = cachejson.map((element) => {
+        if (element.key == bodyjson.key) {
+          element.completed = bodyjson.completed;
+        }
+        return { ...element };
+      });
+      await setCache(JSON.stringify(newlist).replace(/</g, '\\u003c'));
+      return new Response(body, { status: 200 });
+    }
+
+    throw new Error('Wrong Input');
+  } catch (err) {
+    console.log(err.message);
+    return new Response(JSON.stringify({ err: err.message }), { status: 500 });
+  }
+};
+
+const postTodos = async (request) => {
   const body = await request.text();
   try {
     const cache = await getCache();
